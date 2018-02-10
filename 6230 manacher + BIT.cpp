@@ -1,5 +1,9 @@
+/*
+ * @Samaritan_infi
+ */
 ///分析出每个要求的子串是符合 ——————#——————#——————的形式，用manacher处理最长每个顶点的最长回文半径。
 ///即转化成：多少个，两个点互相都在对方半径内的串形式。
+///(i,j) 将 g[i].push_back(j) 然后add到BIT中  add(g[i][j] , 1) 然后求出当前i到i+r[i]的所有j的个数，这样不会误算到后面的 j-r[j]>i但j<i+r[i]的j
 #include<bits/stdc++.h>
 using namespace std;
 typedef long long ll;
