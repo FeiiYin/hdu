@@ -33,7 +33,7 @@ int scan(int tot)
     {
         int j=i-1;
         while(j>=0&&dat[i]*dat[j]==0)j--;
-        bool flag= j==i-1;//�жϹ���
+        bool flag= j==i-1;//ÅÐ¶Ï¹²Ïß
         while(j>=0)
         {
             int area=dat[j]*dat[i];
