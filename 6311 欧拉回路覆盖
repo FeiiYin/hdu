@@ -1,0 +1,85 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long LL;
+const int N = 1e5 + 5;
+
+struct Edge {
+    int to, id, next;
+    bool f;
+} edges[N << 4];
+
+int edge_num, head[N], cnt;
+bool vis[N];
+vector<int> res[N];
+int deg[N];
+
+void init () {
+    edge_num = 0;
+    cnt = 0;
+    memset(deg, 0, sizeof(deg));
+    memset(vis, 0, sizeof(vis));
+    memset(head, -1, sizeof(head));
+}
+
+void add_edge (int u, int v, int id) {
+    edges[edge_num].f = 0; edges[edge_num].to = v; edges[edge_num].id = id;
+    edges[edge_num].next = head[u]; head[u] = edge_num++;
+}
+
+void dfs (int u) {
+    vis[u] = true;
+    for (int i = head[u]; ~i; i = edges[i].next) {
+        int v = edges[i].to, id = edges[i].id;
+        if (! edges[i].f) {
+            edges[i].f = edges[i^1].f = true;    ///将边和反向边标记
+            dfs(v);
+            if (id) res[cnt].push_back(-id);     ///退栈记录边的id
+            else cnt++;                          ///扫到虚边，那么路径加1
+        }
+    }
+}
+void output() {
+    printf("%d\n", cnt);
+    for (int i = 1; i <= cnt; ++i) {
+        printf("%d", res[i].size());
+        for (int j : res[i]) printf(" %d", j); puts("");
+        res[i].clear();
+    }
+}
+
+int main() {
+    int n, m;
+    while(~ scanf("%d %d", &n, &m)) {
+        init();
+        int u, v;
+        for (int i = 1; i <= m; ++i) {
+            scanf("%d %d", &u, &v);
+            deg[u]++; deg[v]++;
+            add_edge(u, v, i);
+            add_edge(v, u, -i);
+        }
+        u = 0;
+        for (int i = 1; i <= n; ++i) {
+            if(deg[i] & 1) { /// 将奇度数点两两连边
+                if (u) {
+                    add_edge(u, i, 0);
+                    add_edge(i, u, 0);
+                    u = 0;
+                } else u = i;
+            }
+        }
+        for (int i = 1; i <= n; ++i)
+            if(! vis[i] && (deg[i] & 1)) {
+                cnt++;
+                dfs(i);
+                cnt--;
+            }
+        for (int i = 1; i <= n; ++i)
+            if(! vis[i] && deg[i]) {
+                cnt++;
+                dfs(i);
+            }
+        output();
+    }
+    return 0;
+}
